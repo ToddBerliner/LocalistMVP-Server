@@ -5,4 +5,5 @@ localist_alerts la
 JOIN
 users u on la.meta = u.id
 WHERE la.action = 300
-GROUP BY 1, 2;
+GROUP BY 1, 2
+ORDER BY 2 DESC;
