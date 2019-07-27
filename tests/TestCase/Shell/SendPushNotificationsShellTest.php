@@ -23,7 +23,8 @@ class SendPushNotificationsShellTest extends TestCase {
         'app.Localists',
         'app.UserLocalists',
         'app.LocalistAlerts',
-        'app.UserUsers'
+        'app.UserUsers',
+        'app.UserSyncs'
     ];
 
     public function setUp() {

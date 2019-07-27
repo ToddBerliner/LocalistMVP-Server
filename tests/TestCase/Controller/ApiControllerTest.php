@@ -5,6 +5,7 @@ use App\Model\Table\LocalistAlertsTable;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Util\QuickbloxUtilTest;
 use Cake\Core\Configure;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
@@ -23,7 +24,8 @@ class ApiControllerTest extends TestCase {
         'app.Localists',
         'app.UserLocalists',
         'app.LocalistAlerts',
-        'app.UserUsers'
+        'app.UserUsers',
+        'app.UserSyncs'
     ];
 
     public function setUp() {
@@ -89,6 +91,12 @@ JSON;
         // Check the user again for chat_registered to simulate APNS subscription
         $user = $Users->get($userId);
         $this->assertTrue($user->chat_registered);
+
+        // Ensure UserSyncs records created
+        $UserSyncs = TableRegistry::getTableLocator()->get('UserSyncs');
+        $userSyncs = $UserSyncs->find()
+            ->where(['user_id' => $userId]);
+        $this->assertEquals(2, $userSyncs->count());
     }
 
     public function testUpdatedApns() {

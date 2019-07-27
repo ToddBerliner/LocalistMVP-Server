@@ -9,5 +9,6 @@ class UsersTable extends Table {
         $this->hasMany('UserLocalists');
         $this->hasMany('UserAlerts');
         $this->hasMany('UserUsers');
+        $this->hasMany('UserSyncs');
     }
 }

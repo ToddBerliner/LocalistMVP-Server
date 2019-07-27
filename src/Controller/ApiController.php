@@ -106,6 +106,7 @@ class ApiController extends AppController {
     private function _syncUser($syncUser) {
 
         $Users = TableRegistry::getTableLocator()->get('Users');
+        $UserSyncs = TableRegistry::getTableLocator()->get('UserSyncs');
 
         // If ID provided, get that user
         if (! empty($syncUser['id'])) {
@@ -178,6 +179,9 @@ class ApiController extends AppController {
                 $this->_subscribeQbUser($user);
             }
         }
+
+        // record sync
+        $UserSyncs->recordSync($user->id);
 
         return $user;
     }
