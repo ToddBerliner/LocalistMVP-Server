@@ -77,7 +77,11 @@ class StatsControllerTest extends TestCase {
         $Localists = TableRegistry::getTableLocator()->get('Localists');
         $localist = $Localists->save($Localists->newEntity([
             'updated' => 123,
-            'json' => '{}'
+            'json' => '{"updated":123, "items":[{"title":"Beer"},{"title":"Beer"},{"title":"Beer"}]}'
+        ]));
+        $localist2 = $Localists->save($Localists->newEntity([
+            'updated' => 123,
+            'json' => '{"updated":123, "items":[{"title":"Beer"}]}'
         ]));
         $LocalistAlerts = TableRegistry::getTableLocator()->get('LocalistAlerts');
         $LocalistAlerts->saveMany($LocalistAlerts->newEntities([
@@ -127,6 +131,17 @@ class StatsControllerTest extends TestCase {
                 'localist_id' => $localist->id
             ]
         ]));
+        $UserLocalists = TableRegistry::getTableLocator()->get('UserLocalists');
+        $UserLocalists->saveMany($UserLocalists->newEntities([
+            [
+                'localist_id' => $localist->id,
+                'user_id' => UsersFixture::DANIEL
+            ],
+            [
+                'localist_id' => $localist2->id,
+                'user_id' => UsersFixture::JOHN
+            ]
+        ]));
         /*
 >>> Calculate from data tables - UserSyncs and LocalistAlerts
 - [ ] Daily num of active users [[day: count of unique user_ids from syncs]] 1/1 - 2, 1/2 - 2, 1/3 - 3
@@ -163,11 +178,13 @@ class StatsControllerTest extends TestCase {
             '2019-01-01' => 2,
             '2019-01-02' => 4
         ];
+        $expectedListItemsCounts = [3, 1];
 
         $this->assertEquals($expectedActiveUserIds, Hash::extract($data['active_users'], '{n}.id'));
         $this->assertEquals($expectedActiveUsersByDay, $data['active_users_by_day']);
         $this->assertEquals($expectedUserSyncsByDay, $data['user_syncs_by_day']);
         $this->assertEquals($expectedActivitiesByDay, $data['activities_by_day']);
         $this->assertEquals($expectedItemsByDay, $data['items_by_day']);
+        $this->assertEquals($expectedListItemsCounts, $data['list_item_counts']);
     }
 }

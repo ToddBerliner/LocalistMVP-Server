@@ -30,7 +30,8 @@ class StatsController extends AppController {
             'active_users_by_day' => $this->_getActiveUsersPerDay(),
             'user_syncs_by_day' => $this->_getUserSyncsPerDay(),
             'activities_by_day' => $this->_getActiviesPerDay(),
-            'items_by_day' => $this->_getItemUpdatesPerDay()
+            'items_by_day' => $this->_getItemUpdatesPerDay(),
+            'list_item_counts' => $this->_getItemCountsPerList()
         ];
         $this->set('data', $data);
     }
@@ -96,6 +97,21 @@ class StatsController extends AppController {
             ->where(['LocalistAlerts.action' => LocalistAlertsTable::ITEMS_UPDATED])
             ->group(['DATE(created)']);
         return self::_countsByDate($itemUpdatesPerDay->all());
+    }
+
+    private function _getItemCountsPerList() {
+        $Localists = TableRegistry::getTableLocator()->get('Localists');
+        $activeLists = $Localists->find()
+            ->contain(['UserLocalists'])
+            ->all();
+        $itemCounts = [];
+        $activeLists->each(function($list) use (&$itemCounts) {
+            if (!empty($list->user_localists)) {
+                $listJson = json_decode($list, true);
+                $itemCounts[] = count($listJson['items']);
+            }
+        });
+        return $itemCounts;
     }
 
     private static function _countsByDate(ResultSet $resultsCollection) {
