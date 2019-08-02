@@ -157,6 +157,7 @@ class StatsControllerTest extends TestCase {
         $response = json_decode($this->_response->getBody(), true);
         $data = $response['data'];
 
+        $expectedActiveListIds = [1, 2];
         $expectedActiveUserIds = [2, 3];
         $expectedActiveUsersByDay = [
             '2019-01-01' => 2,
@@ -180,6 +181,7 @@ class StatsControllerTest extends TestCase {
         ];
         $expectedListItemsCounts = [3, 1];
 
+        $this->assertEquals($expectedActiveListIds, Hash::extract($data['active_lists'], '{n}.id'));
         $this->assertEquals($expectedActiveUserIds, Hash::extract($data['active_users'], '{n}.id'));
         $this->assertEquals($expectedActiveUsersByDay, $data['active_users_by_day']);
         $this->assertEquals($expectedUserSyncsByDay, $data['user_syncs_by_day']);

@@ -5,6 +5,7 @@
 /logs/*
 /tmp/*
 /vendor/*
+tmp/*
 
 # OS generated files #
 ######################
@@ -38,3 +39,4 @@ nbproject/*
 .vscode
 # Sass preprocessor
 .sass-cache/
+tmp/cache/localist_cake_routes_route_collection

@@ -26,6 +26,7 @@ class StatsController extends AppController {
 - [ ] Daily activities item changes [[day: number of data alerts]]
          */
         $data = [
+            'active_lists' => $this->_getActiveLists(),
             'active_users' => $this->_getActiveUsers(),
             'active_users_by_day' => $this->_getActiveUsersPerDay(),
             'user_syncs_by_day' => $this->_getUserSyncsPerDay(),
@@ -37,20 +38,22 @@ class StatsController extends AppController {
     }
 
     private function _getActiveUsers() {
-        $UserSyncs = TableRegistry::getTableLocator()->get('UserSyncs');
-        $userSyncs = $UserSyncs->find()
-            ->select(['UserSyncs.user_id'])
-            ->distinct(['UserSyncs.user_id'])
-            ->where(['DATE(created)' => date('Y-m-d')]);
-        $activeUsers = [];
-        if (!$userSyncs->isEmpty()) {
-            $activeUserIds = $userSyncs->extract('user_id')->toArray();
-            $Users = TableRegistry::getTableLocator()->get('Users');
-            $activeUsers = $Users->find()
-                ->where(['id IN' => $activeUserIds])
-                ->all();
-        }
+        $Users = TableRegistry::getTableLocator()->get('Users');
+        $activeUsers = $Users->find()
+            ->innerJoinWith('UserSyncs', function($q) {
+                return $q->where(['DATE(UserSyncs.created)' => date('Y-m-d')]);
+            })
+            ->all();
         return $activeUsers;
+    }
+
+    private function _getActiveLists() {
+        $Localists = TableRegistry::getTableLocator()->get('Localists');
+        $localists = $Localists->find()
+            ->contain(['UserLocalists'])
+            ->innerJoinWith('UserLocalists')
+            ->all();
+        return $localists;
     }
 
     private function _getActiveUsersPerDay() {
