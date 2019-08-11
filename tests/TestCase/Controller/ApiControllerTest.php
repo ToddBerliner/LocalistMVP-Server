@@ -2,6 +2,7 @@
 namespace App\Test\TestCase\Controller;
 
 use App\Model\Table\LocalistAlertsTable;
+use App\Test\Fixture\LocalistsFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Util\QuickbloxUtilTest;
 use Cake\Core\Configure;
@@ -24,6 +25,7 @@ class ApiControllerTest extends TestCase {
         'app.Localists',
         'app.UserLocalists',
         'app.LocalistAlerts',
+        'app.UserLocalistAlerts',
         'app.UserUsers',
         'app.UserSyncs'
     ];
@@ -555,5 +557,47 @@ JSON;
         $this->assertResponseSuccess();
         // Find log and look for line
 
+    }
+
+    public function testRecordLocalistAlert() {
+        $data = [
+            "localistId" => 123,
+            "userId" => UsersFixture::JOHN,
+            "action" => "presented"
+        ];
+        $this->post('/api/recordlocalistalert.json', $data);
+        $this->assertResponseSuccess();
+
+        $data = [
+            "localistId" => 456,
+            "userId" => UsersFixture::HANK,
+            "action" => "viewed"
+        ];
+        $this->post('/api/recordlocalistalert.json', $data);
+        $this->assertResponseSuccess();
+
+        // Get and check the UserLocalistAlerts records
+        $UserLocalistAlerts = TableRegistry::getTableLocator()
+            ->get('UserLocalistAlerts');
+
+        $johnAlert = $UserLocalistAlerts->find()
+            ->where([
+                'user_id' => UsersFixture::JOHN
+            ])
+            ->all();
+        $this->assertEquals(1, $johnAlert->count());
+        $johnAlert = $johnAlert->first();
+        $this->assertEquals(123, $johnAlert->localist_id);
+        $this->assertEquals('presented', $johnAlert->action);
+
+        $hankAlert = $UserLocalistAlerts->find()
+            ->where([
+                'user_id' => UsersFixture::HANK
+            ])
+            ->all();
+        $this->assertEquals(1, $hankAlert->count());
+        $hankAlert = $hankAlert->first();
+        $this->assertEquals(456, $hankAlert->localist_id);
+        $this->assertEquals('viewed', $hankAlert->action);
     }
 }

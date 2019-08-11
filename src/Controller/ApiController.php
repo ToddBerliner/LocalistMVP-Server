@@ -554,15 +554,18 @@ class ApiController extends AppController {
         $this->set('message', 'Does not matter');
     }
 
-//    public function recordLocalistAlert() {
-//        $data = $this->request->getData();
-//        try {
-//
-//        } catch (\Exception $e) {
-//            Log::error("Error recording localist alert from device: "
-//                . $e->getMessage());
-//        }
-//    }
+    public function recordLocalistAlert() {
+        $UserLocalistAlerts = TableRegistry::getTableLocator()
+            ->get('UserLocalistAlerts');
+        $data = $this->request->getData();
+        try {
+            $UserLocalistAlerts->recordUserLocalistAlert($data['localistId'],
+                $data['userId'], $data['action']);
+        } catch (\Exception $e) {
+            Log::error("Error recording localist alert from device: "
+                . $e->getMessage());
+        }
+    }
 
     private static function _elapsedMS($microts) {
         if ($microts === null) {
