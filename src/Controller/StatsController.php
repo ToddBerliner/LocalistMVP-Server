@@ -53,6 +53,7 @@ class StatsController extends AppController {
     private function _getActiveLists() {
         $Localists = TableRegistry::getTableLocator()->get('Localists');
         $localists = $Localists->find()
+            ->distinct('Localists.id')
             ->contain(['UserLocalists' => 'Users'])
             ->innerJoinWith('LocalistAlerts', function ($q) {
                 return $q->where([
