@@ -19,8 +19,10 @@ class Localist extends Entity {
 
         // Replace the members with the actual Users from the UserLocalists table
         $values['members'] = [];
-        foreach($this->user_localists as $user_localist) {
-            $values['members'][] = $user_localist->user;
+        if (! empty($this->user_localists)) {
+            foreach($this->user_localists as $user_localist) {
+                $values['members'][] = $user_localist->user;
+            }
         }
 
         return $values;

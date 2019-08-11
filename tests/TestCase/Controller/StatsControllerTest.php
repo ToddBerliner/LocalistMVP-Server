@@ -129,6 +129,14 @@ class StatsControllerTest extends TestCase {
                 'action' => LocalistAlertsTable::ITEMS_UPDATED,
                 'created' => '2019-01-02',
                 'localist_id' => $localist->id
+            ],
+            [
+                'action' => LocalistAlertsTable::ITEMS_UPDATED,
+                'localist_id' => $localist->id
+            ],
+            [
+                'action' => LocalistAlertsTable::ITEMS_UPDATED,
+                'localist_id' => $localist2->id
             ]
         ]));
         $UserLocalists = TableRegistry::getTableLocator()->get('UserLocalists');
@@ -177,7 +185,8 @@ class StatsControllerTest extends TestCase {
         ];
         $expectedItemsByDay = [
             '2019-01-01' => 2,
-            '2019-01-02' => 4
+            '2019-01-02' => 4,
+            date('Y-m-d') => 2
         ];
         $expectedListItemsCounts = [3, 1];
 

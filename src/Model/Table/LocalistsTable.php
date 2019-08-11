@@ -7,6 +7,7 @@ class LocalistsTable extends Table {
         parent::initialize($config);
         $this->addBehavior('Timestamp');
         $this->hasMany('UserLocalists');
+        $this->hasMany('LocalistAlerts');
         $this->hasMany('UserAlerts');
     }
 }

@@ -40,8 +40,11 @@ class StatsController extends AppController {
     private function _getActiveUsers() {
         $Users = TableRegistry::getTableLocator()->get('Users');
         $activeUsers = $Users->find()
+            ->distinct('Users.id')
             ->innerJoinWith('UserSyncs', function($q) {
-                return $q->where(['DATE(UserSyncs.created)' => date('Y-m-d')]);
+                return $q->where([
+                    'DATE(UserSyncs.created)' => date('Y-m-d')
+                ]);
             })
             ->all();
         return $activeUsers;
@@ -50,8 +53,12 @@ class StatsController extends AppController {
     private function _getActiveLists() {
         $Localists = TableRegistry::getTableLocator()->get('Localists');
         $localists = $Localists->find()
-            ->contain(['UserLocalists'])
-            ->innerJoinWith('UserLocalists')
+            ->contain(['UserLocalists' => 'Users'])
+            ->innerJoinWith('LocalistAlerts', function ($q) {
+                return $q->where([
+                    'DATE(LocalistAlerts.created)' => date('Y-m-d')
+                ]);
+            }) // ensure list has activity
             ->all();
         return $localists;
     }
@@ -120,7 +127,7 @@ class StatsController extends AppController {
     private static function _countsByDate(ResultSet $resultsCollection) {
         $results = [];
         $resultsCollection->each(function ($result) use (&$results) {
-            $results[$result['thedate']] = $result['count'];
+            $results[$result['thedate']] = intval($result['count']);
         });
         return $results;
     }
