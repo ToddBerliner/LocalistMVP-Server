@@ -565,6 +565,7 @@ class ApiController extends AppController {
             Log::error("Error recording localist alert from device: "
                 . $e->getMessage());
         }
+        $this->set('message', 'Does not matter');
     }
 
     private static function _elapsedMS($microts) {
