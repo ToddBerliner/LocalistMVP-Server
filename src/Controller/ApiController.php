@@ -32,6 +32,22 @@ class ApiController extends AppController {
         parent::initialize();
     }
 
+    public function updateLists() {
+        $Localists = TableRegistry::getTableLocator()->get('Localists');
+        $localists = $Localists->find()->all();
+        $localists->each(function($localist) use ($Localists) {
+            $json = json_decode($localist['json'], true);
+            if (!array_key_exists('markedItems', $json)) {
+                $json['markedItems'] = [];
+                $localist['json'] = json_encode($json);
+                $Localists->save($localist);
+                var_dump("Updated {$localist['id']}");
+            } else {
+                var_dump("{$localist['id']} already updated.");
+            }
+        });
+    }
+
     public function getServerPeople() {
         $Users = TableRegistry::getTableLocator()->get('Users');
         $data = $Users->find()->all()->toArray();
