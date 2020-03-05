@@ -40,3 +40,10 @@ nbproject/*
 # Sass preprocessor
 .sass-cache/
 tmp/cache/localist_cake_routes_route_collection
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+tmp/debug_kit.sqlite
+tmp/cache/localist_cake_routes_route_collection
