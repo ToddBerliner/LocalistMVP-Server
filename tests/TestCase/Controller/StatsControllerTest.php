@@ -17,6 +17,7 @@ class StatsControllerTest extends TestCase {
         'app.Users',
         'app.Localists',
         'app.UserLocalists',
+        'app.UserLocalistAlerts',
         'app.LocalistAlerts',
         'app.UserUsers',
         'app.UserSyncs'
