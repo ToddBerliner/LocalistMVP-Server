@@ -169,7 +169,7 @@ class LocalistAlertsTable extends Table {
                 'badge' => $badgeCount,
                 'category' => self::ACTIVITY_CATEGORY,
                 'alert' => [
-                    'title' => 'You\'ve been added to a list! ' . json_decode('"\ud83e\udd18"'),
+                    'title' => "You've been added to a list! " . json_decode('"\ud83e\udd18"'),
                     'body' => 'Welcome to the "' . $listName . '" list.'
                 ]
             ]
@@ -194,8 +194,8 @@ class LocalistAlertsTable extends Table {
                 'badge' => $badgeCount,
                 'category' => self::ACTIVITY_CATEGORY,
                 'alert' => [
-                    'title' => 'You\'ve been removed from a list. ' . json_decode('"\ud83d\ude14"'),
-                    'body' => 'You\'ve been removed from the "' . $listName . '" list.'
+                    'title' => "You've been removed from a list. " . json_decode('"\ud83d\ude14"'),
+                    'body' => "You've been removed from the \"" . $listName . "\" list."
                 ]
             ]
         ];

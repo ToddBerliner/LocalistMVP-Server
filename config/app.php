@@ -1,5 +1,6 @@
 <?php
 define('LOG_DEVICE', 'info');
+define('QBENV', $_SERVER['QBENV'] ?? 'development');
 
 if (!defined('RDS_HOSTNAME')) {
     define('RDS_HOSTNAME', $_SERVER['RDS_HOSTNAME'] ?? 'localhost');

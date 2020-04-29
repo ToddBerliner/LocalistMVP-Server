@@ -65,6 +65,9 @@ class QuickbloxUtilTest extends TestCase {
         $pushed = QuickBlox::sendPush($user, $message);
         $this->assertTrue($pushed);
 
+        $deleted = QuickBlox::deleteUser($user);
+        $this->assertNull($user->chat_user);
+
         return $user;
     }
 

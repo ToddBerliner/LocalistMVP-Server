@@ -41,12 +41,12 @@ class QuickBlox {
                 return $token;
             }
             // else
-            Log::error('Couldn\'t get session from QuickBlox, code ' .
+            Log::error("Couldn't get session from QuickBlox, code " .
                 $response->getStatusCode());
             Log::error('Response: ' . print_r($response->json, true));
             Log::error('Params: ' . print_r($params, true));
         } catch (\Exception $e) {
-            Log::error('Couldn\'t get session from QuickBlox, ' .
+            Log::error("Couldn't get session from QuickBlox, " .
                 $e->getMessage());
         }
         return null;
@@ -113,14 +113,14 @@ class QuickBlox {
                 $user->chat_password = null;
                 Log::debug("Deleted QB user for " . $user->id);
             } else {
-                Log::error('Couldn\'t delete user in QuickBlox, code ' .
+                Log::error("Couldn't delete user in QuickBlox, code " .
                     $response->getStatusCode());
                 Log::error('Response: ' . print_r($response->json, true));
                 Log::error('Params: ' . print_r($userParams, true));
             }
         } catch (\Exception $e) {
 
-            Log::error('Couldn\'t delete user in QuickBlox, ' .
+            Log::error("Couldn't delete user in QuickBlox, " .
                 $e->getMessage());
         }
 
@@ -130,13 +130,13 @@ class QuickBlox {
     public static function setAPNSToken($user) {
 
         if (! isset($user->chat_user) || ! isset($user->chat_password)) {
-            Log::error('Couldn\'t set APNS token for ' . $user->id .
+            Log::error("Couldn't set APNS token for " . $user->id .
                 ', chat user not set');
             return false;
         }
 
         if (! isset($user->apns)) {
-            Log::error('Couldn\'t set APNS token for ' . $user->id .
+            Log::error("Couldn't set APNS token for " . $user->id .
                 ', APNS not set');
             return false;
         }
@@ -149,11 +149,10 @@ class QuickBlox {
         $http = new Client();
 
         // subscribe the user to push notifications
-        $env = 'development';
         $params = self::_addParams([
             'notification_channels' => 'apns',
             'push_token' => [
-                'environment' => $env,
+                'environment' => QBENV,
                 'client_identification_sequence' => $user->apns
             ],
             'device' => [
@@ -167,7 +166,7 @@ class QuickBlox {
                 json_encode($params),
                 self::_baseOptions($session));
             if (! $response->isOk()) {
-                Log::error('Couldn\'t subscribe to pushes for user in QuickBlox, code ' .
+                Log::error("Couldn't subscribe to pushes for user in QuickBlox, code " .
                     $response->getStatusCode());
                 Log::error('Params: ' . print_r($params, true));
                 Log::error('Response: ' . print_r($response->json, true));
@@ -176,7 +175,7 @@ class QuickBlox {
                 Log::debug("Set APNS token for user: " . $user->id);
             }
         } catch (\Exception $e) {
-            Log::error('Couldn\'t subscribe to pushes for user in QuickBlox, ' .
+            Log::error("Couldn't subscribe to pushes for user in QuickBlox, " .
                 $e->getMessage());
             return false;
         }
@@ -204,12 +203,11 @@ class QuickBlox {
         if (isset($message)) {
             $payload['message'] = $message;
         }
-        $env = 'development';
         $params = self::_addParams([
             'event' => [
                 'notification_type' => 'push',
                 'push_type' => 'apns',
-                'environment' => $env,
+                'environment' => QBENV,
                 'user' => ['ids' => $user->chat_user],
                 'message' => 'payload=' . base64_encode(json_encode($message))
             ]
@@ -222,7 +220,7 @@ class QuickBlox {
                 self::_baseOptions($session));
 
             if (! $response->isOk()) {
-                Log::error("Couldn\'t send push to user {$user->id} in QuickBlox, code " .
+                Log::error("Couldn't send push to user {$user->id} in QuickBlox, code " .
                     $response->getStatusCode());
                 Log::error($params);
                 // When this happens, QuickBlox deletes the APNS token(s)
@@ -233,7 +231,7 @@ class QuickBlox {
                 Log::debug("Sent push to: " . $user->id . " - " . json_encode($message));
             }
         } catch (\Exception $e) {
-            Log::error("Couldn\'t send push to user {$user->id} in QuickBlox, " .
+            Log::error("Couldn't send push to user {$user->id} in QuickBlox, " .
                 $e->getMessage());
             return false;
         }
@@ -289,6 +287,7 @@ class QuickBlox {
     }
 
     private static function _createUser($session, $payload) {
+
         $url = self::QB_API_ENDPOINT . self::QB_PATH_USER;
         return self::_post($session, $url, $payload);
     }
@@ -357,7 +356,7 @@ class QuickBlox {
                     Log::debug("Hit QB throttle, waiting a sec.");
                     return self::_delete($session, $url);
                 }
-                Log::error("Couldn\'t POST payload in QuickBlox:"
+                Log::error("Couldn't POST payload in QuickBlox:"
                     . $url . ' '
                     . print_r($session, true) . ' '
                     . $response->getStatusCode());
